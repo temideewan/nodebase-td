@@ -25,9 +25,7 @@ import {
   FormLabel,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
 import { authClient } from '@/lib/auth-client';
-// import {}
 
 const registerSchema = z
   .object({
@@ -67,8 +65,7 @@ export function RegisterForm() {
           router.push('/');
         },
         onError: (ctx) => {
-          console.log('error context', ctx);
-          toast.error(ctx.error.message);
+          toast.error(ctx.error.message || "Something went wrong. Please try again.");
         },
       }
     );

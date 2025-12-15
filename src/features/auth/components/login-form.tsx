@@ -25,7 +25,7 @@ import {
   FormLabel,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
+import { authClient } from '@/lib/auth-client';
 // import {}
 
 const loginSchema = z.object({
@@ -46,7 +46,24 @@ export function LoginForm() {
   });
 
   const onSubmit = async (values: LoginFormValues) => {
-    console.log(values);
+    await authClient.signIn.email(
+      {
+        email: values.email,
+        password: values.password,
+        callbackURL: '/',
+      },
+      {
+        onSuccess: () => {
+          router.push('/');
+        },
+        onError: (ctx) => {
+          toast.error(
+            ctx.error.message ||
+              'Something went wrong while logging in. Please try again!'
+          );
+        },
+      }
+    );
   };
   const isPending = form.formState.isSubmitting;
 
