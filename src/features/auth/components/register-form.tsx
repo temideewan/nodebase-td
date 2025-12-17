@@ -52,7 +52,6 @@ export function RegisterForm() {
   });
 
   const onSubmit = async (values: RegisterFormValues) => {
-    console.log(values);
     await authClient.signUp.email(
       {
         name: values.email,
@@ -65,7 +64,9 @@ export function RegisterForm() {
           router.push('/');
         },
         onError: (ctx) => {
-          toast.error(ctx.error.message || "Something went wrong. Please try again.");
+          toast.error(
+            ctx.error.message || 'Something went wrong. Please try again.'
+          );
         },
       }
     );
@@ -90,6 +91,12 @@ export function RegisterForm() {
                     disabled={isPending}
                     type='button'
                   >
+                    <Image
+                      src={'/logos/github.svg'}
+                      alt={'Github'}
+                      width={20}
+                      height={20}
+                    />
                     Continue with Github
                   </Button>
                   <Button
@@ -98,6 +105,12 @@ export function RegisterForm() {
                     disabled={isPending}
                     type='button'
                   >
+                    <Image
+                      src={'/logos/google.svg'}
+                      alt={'google'}
+                      width={20}
+                      height={20}
+                    />
                     Continue with Google
                   </Button>
                 </div>
