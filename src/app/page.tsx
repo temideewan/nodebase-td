@@ -7,15 +7,23 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
 const Page = () => {
-  const queryClient = useQueryClient();
   const trpc = useTRPC();
-  const { data, isPending, isError } = useQuery(trpc.getWorkflows.queryOptions());
+  const { data, isPending, isError } = useQuery(
+    trpc.getWorkflows.queryOptions()
+  );
   const create = useMutation(
     trpc.createWorkflow.mutationOptions({
       onSuccess: () => {
-        toast.success("Job queued")
+        toast.success('Job queued');
       },
     })
+  );
+  const testAi = useMutation(
+    trpc.testAi.mutationOptions({
+      onSuccess: () => {
+        toast.success('AI Job queued');
+      },
+    }) 
   );
   return (
     <div className='min-h-screen min-w-screen flex items-center justify-center flex-col gap-y-6'>
@@ -23,6 +31,9 @@ const Page = () => {
       {isPending && <div>Pending....</div>}
       {isError && <div className='text-red-500'>Something went wrong</div>}
       {data && <div>{JSON.stringify(data, null, 2)}</div>}
+      <Button onClick={() => testAi.mutate()} disabled={testAi.isPending}>
+        Test Ai
+      </Button>
       <Button onClick={() => create.mutate()} disabled={create.isPending}>
         Create workflow
       </Button>
