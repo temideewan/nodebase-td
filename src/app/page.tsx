@@ -1,35 +1,37 @@
-'use client';
-import { caller } from '@/trpc/server';
-import { LogoutButton } from './logout';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useTRPC } from '@/trpc/client';
-import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
+"use client";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { useTRPC } from "@/trpc/client";
+import { LogoutButton } from "./logout";
 
 const Page = () => {
   const trpc = useTRPC();
   const { data, isPending, isError } = useQuery(
-    trpc.getWorkflows.queryOptions()
+    trpc.getWorkflows.queryOptions(),
   );
   const create = useMutation(
     trpc.createWorkflow.mutationOptions({
       onSuccess: () => {
-        toast.success('Job queued');
+        toast.success("Job queued");
       },
-    })
+    }),
   );
   const testAi = useMutation(
     trpc.testAi.mutationOptions({
       onSuccess: () => {
-        toast.success('AI Job queued');
+        toast.success("AI Job queued");
       },
-    }) 
+      onError: () => {
+        toast.error("Something went wrong");
+      },
+    }),
   );
   return (
-    <div className='min-h-screen min-w-screen flex items-center justify-center flex-col gap-y-6'>
+    <div className="min-h-screen min-w-screen flex items-center justify-center flex-col gap-y-6">
       Protected server component
       {isPending && <div>Pending....</div>}
-      {isError && <div className='text-red-500'>Something went wrong</div>}
+      {isError && <div className="text-red-500">Something went wrong</div>}
       {data && <div>{JSON.stringify(data, null, 2)}</div>}
       <Button onClick={() => testAi.mutate()} disabled={testAi.isPending}>
         Test Ai
