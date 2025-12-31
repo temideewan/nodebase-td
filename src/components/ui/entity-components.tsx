@@ -1,6 +1,7 @@
-import { PlusIcon } from 'lucide-react';
+import { PlusIcon, SearchIcon } from 'lucide-react';
 import { Button } from './button';
 import Link from 'next/link';
+import { Input } from './input';
 
 type EntityHeaderProps = {
   title: string;
@@ -73,6 +74,30 @@ export const EntityContainer = ({
         </div>
         {pagination}
       </div>
+    </div>
+  );
+};
+
+interface EntitySearchProps {
+  value: string;
+  placeHolder?: string;
+  onChange: (value: string) => void;
+}
+
+export const EntitySearch = ({
+  value,
+  placeHolder = 'Search',
+  onChange,
+}: EntitySearchProps) => {
+  return (
+    <div className='relative ml-auto'>
+      <SearchIcon className='size-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground' />
+      <Input
+        className='max-w-[200px] bg-background shadow-none border-border pl-8'
+        placeholder={placeHolder}
+        value={value}
+        onChange={(e) => onChange(e.target.value  )}
+      />
     </div>
   );
 };

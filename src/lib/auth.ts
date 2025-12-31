@@ -3,6 +3,7 @@ import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { checkout, polar, portal } from '@polar-sh/better-auth';
 import prisma from './database';
 import { polarClient } from './polar';
+import { PRODUCT_SLUG } from '@/config/constants';
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: 'postgresql',
@@ -29,7 +30,7 @@ export const auth = betterAuth({
           products: [
             {
               productId: '5d4c2121-1cbc-424f-9464-cd8ef99c4446',
-              slug: 'nodebase-pro',
+              slug: PRODUCT_SLUG,
             },
           ],
           successUrl: process.env.POLAR_SUCCESS_URL,
