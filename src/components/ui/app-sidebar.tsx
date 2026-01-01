@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/sidebar';
 import { authClient } from '@/lib/auth-client';
 import { useHasActiveSubscription } from '@/features/subscriptions/hooks/use-subscription';
+import { PRODUCT_SLUG } from '@/config/constants';
 
 const menuItems = [
   {
@@ -105,7 +106,7 @@ export const AppSidebar = () => {
                 tooltip={'upgrade to pro'}
                 className='gap-x-4 h-10 px-4'
                 onClick={() => {
-                  authClient.checkout({ slug: 'nodebase-pro' });
+                  authClient.checkout({ slug: PRODUCT_SLUG });
                 }}
               >
                 <StarIcon className='w-4 h-4' />

@@ -9,6 +9,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { PRODUCT_SLUG } from '@/config/constants';
 
 import { authClient } from '@/lib/auth-client';
 
@@ -31,7 +32,7 @@ export const UpgradeModal = ({ open, onOpen }: UpgradeModalProps) => {
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            onClick={() => authClient.checkout({ slug: 'nodebase-pro' })}
+            onClick={() => authClient.checkout({ slug: PRODUCT_SLUG })}
           >
             Upgrade to pro
           </AlertDialogAction>
