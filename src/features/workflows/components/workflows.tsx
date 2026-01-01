@@ -7,6 +7,7 @@ import {
 import {
   EntityContainer,
   EntityHeader,
+  EntityPagination,
   EntitySearch,
 } from '@/components/ui/entity-components';
 import { useUpgradeModal } from '@/hooks/use-upgrade-modal';
@@ -64,7 +65,7 @@ export const WorkflowsContainer = ({
     <EntityContainer
       header={<WorkflowsHeader />}
       search={<WorkflowsSearch />}
-      pagination={<></>}
+      pagination={<WorkflowsPagination />}
     >
       {children}
     </EntityContainer>
@@ -82,6 +83,19 @@ export const WorkflowsSearch = () => {
       value={searchValue}
       placeHolder='Search workflows'
       onChange={onSearchChange}
+    />
+  );
+};
+
+export const WorkflowsPagination = () => {
+  const workflows = useSuspenseWorkflows();
+  const [params, setParams] = useWorkflowsParams();
+  return (
+    <EntityPagination
+      disabled={workflows.isFetching}
+      totalPages={workflows.data.totalPages}
+      page={workflows.data.page}
+      onPageChange={(page) => setParams({ ...params, page })}
     />
   );
 };
