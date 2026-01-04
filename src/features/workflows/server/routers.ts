@@ -7,8 +7,6 @@ import {
 } from '@/trpc/init';
 import z from 'zod';
 import { PAGINATION } from '@/config/constants';
-import { auth } from '@/lib/auth';
-import { TRPCClientError } from '@trpc/client';
 
 export const workflowsRouter = createTRPCRouter({
   create: premiumProcedure.mutation(({ ctx }) => {
