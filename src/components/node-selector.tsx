@@ -84,7 +84,10 @@ export function NodeSelector({
           type: selectedNode.type,
         };
         if (hasInitialTrigger) {
-          return [newNode];
+          return [
+            ...nodes.filter((node) => node.type !== NodeType.INITIAL),
+            newNode,
+          ];
         }
 
         return [...nodes, newNode];
@@ -120,7 +123,7 @@ export function NodeSelector({
                       className='size-5 object-contain rounded-sm'
                     />
                   ) : (
-                    <Icon className='5' />
+                    <Icon className='size-5' />
                   )}
                   <div className='flex flex-col items-start text-left'>
                     <span className='font-medium text-sm'>
