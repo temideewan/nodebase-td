@@ -9,7 +9,6 @@ export const AddNodeButton = memo(() => {
   return (
     <NodeSelector open={selectorOpen} onOpenChange={setSelectorOpen}>
     <Button
-      onClick={() => {}}
       aria-label='Add node'
       size='icon'
       variant='outline'
