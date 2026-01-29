@@ -3,6 +3,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -28,6 +29,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useEffect } from 'react';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 const methodArray = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
@@ -47,6 +49,8 @@ interface Props {
   defaultBody?: string;
 }
 
+export type FormType = z.infer<typeof formSchema>;
+
 export const HttpRequestsDialog = ({
   open,
   onOpenChange,
@@ -55,7 +59,7 @@ export const HttpRequestsDialog = ({
   defaultEndpoint,
   defaultMethod = 'GET',
 }: Props) => {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       endpoint: defaultEndpoint,
@@ -67,7 +71,17 @@ export const HttpRequestsDialog = ({
   const watchMethod = form.watch('method');
   const showBodyField = ['POST', 'PUT', 'PATCH'].includes(watchMethod);
 
-  const handleSubmit = (values: z.infer<typeof formSchema>) => {
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        endpoint: defaultEndpoint,
+        method: defaultMethod,
+        body: defaultBody,
+      });
+    }
+  }, [open, defaultBody, defaultMethod, defaultMethod, form]);
+
+  const handleSubmit = (values: FormType) => {
     onSubmit(values);
     onOpenChange(false);
   };
@@ -166,6 +180,9 @@ export const HttpRequestsDialog = ({
                 }}
               />
             )}
+            <DialogFooter className='mt-4'>
+              <Button type='submit'>Save</Button>
+            </DialogFooter>
           </form>
         </Form>
       </DialogContent>
