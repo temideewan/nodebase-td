@@ -69,7 +69,7 @@ export const workflowsRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id, nodes, edges } = input;
       const workflow = await prisma.workflow.findUniqueOrThrow({
-        where: { id: input.id, userId: ctx.auth.user.id },
+        where: { id, userId: ctx.auth.user.id },
       });
 
       // transaction to ensure consistency
@@ -77,7 +77,7 @@ export const workflowsRouter = createTRPCRouter({
         // delete existing nodes and connections, because of cascade the connections get deleted when the nodes are deleted.
         await tx.node.deleteMany({
           where: {
-            workflowId: id,
+            workflowId: workflow.id,
           },
         });
 
@@ -103,12 +103,12 @@ export const workflowsRouter = createTRPCRouter({
         });
 
         // update workflow's updateAt timestamp
-        await tx.workflow.update({
+        const updatedWorkflow = await tx.workflow.update({
           where: { id },
           data: { updatedAt: new Date() },
         });
 
-        return workflow;
+        return updatedWorkflow;
       });
     }),
   getOne: protectedProcedure

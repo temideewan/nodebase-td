@@ -31,7 +31,7 @@ import { useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
-const methodArray = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
+const methodArray = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'] as const;
 
 const formSchema = z.object({
   endpoint: z.url({ message: 'please enter a valid URL' }),
@@ -79,7 +79,7 @@ export const HttpRequestsDialog = ({
         body: defaultBody,
       });
     }
-  }, [open, defaultBody, defaultMethod, defaultMethod, form]);
+  }, [open, defaultBody, defaultMethod, defaultEndpoint, form]);
 
   const handleSubmit = (values: FormType) => {
     onSubmit(values);
@@ -171,8 +171,8 @@ export const HttpRequestsDialog = ({
                         />
                       </FormControl>
                       <FormDescription>
-                        Static URL or use {'{{variables}}'} for simple values or{' '}
-                        {'{{json variable}}'} to stringify objects
+                        JSON request body. Use {'{{variables}}'} for simple
+                        values or {'{{json variable}}'} to stringify objects
                       </FormDescription>
                       <FormMessage />
                     </FormItem>

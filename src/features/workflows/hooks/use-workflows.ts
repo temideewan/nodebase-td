@@ -95,7 +95,7 @@ export const useUpdateWorkflowName = () => {
 
 
 /**
- * Hook to update a workflow nme
+ * Hook to update a workflow name
  */
 
 export const useUpdateWorkflow = () => {
