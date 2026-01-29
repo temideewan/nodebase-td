@@ -13,7 +13,6 @@ export const executeAi = inngest.createFunction(
   { event: 'execute/ai' },
   async ({ step }) => {
     await step.sleep('pretend', '5s');
-    console.error('I am now tracking this');
     Sentry.logger.info('Some logger happening', {
       log_source: 'inngest function',
     });
