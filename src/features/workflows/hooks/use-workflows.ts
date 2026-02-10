@@ -35,7 +35,7 @@ export const useCreateWorkflow = () => {
       onError: (error) => {
         toast.error(`Failed to create workflow: ${error.message}`);
       },
-    })
+    }),
   );
 };
 
@@ -53,10 +53,10 @@ export const useRemoveWorkflow = () => {
         toast.success(`Workflow "${data.name}" removed`);
         queryClient.invalidateQueries(trpc.workflows.getMany.queryOptions({}));
         queryClient.invalidateQueries(
-          trpc.workflows.getOne.queryFilter({ id: data.id })
+          trpc.workflows.getOne.queryFilter({ id: data.id }),
         );
       },
-    })
+    }),
   );
 };
 
@@ -83,16 +83,15 @@ export const useUpdateWorkflowName = () => {
         toast.success(`workflow "${data.name}" updated`);
         queryClient.invalidateQueries(trpc.workflows.getMany.queryOptions({}));
         queryClient.invalidateQueries(
-          trpc.workflows.getOne.queryOptions({ id: data.id })
+          trpc.workflows.getOne.queryOptions({ id: data.id }),
         );
       },
       onError: (error) => {
         toast.error(`Failed to update workflow: ${error.message}`);
       },
-    })
+    }),
   );
 };
-
 
 /**
  * Hook to update a workflow name
@@ -108,13 +107,31 @@ export const useUpdateWorkflow = () => {
         toast.success(`workflow "${data.name}" saved`);
         queryClient.invalidateQueries(trpc.workflows.getMany.queryOptions({}));
         queryClient.invalidateQueries(
-          trpc.workflows.getOne.queryOptions({ id: data.id })
+          trpc.workflows.getOne.queryOptions({ id: data.id }),
         );
       },
       onError: (error) => {
         toast.error(`Failed to save workflow: ${error.message}`);
       },
-    })
+    }),
   );
 };
 
+/**
+ * Hook to execute a workflow
+ */
+
+export const useExecuteWorkflow = () => {
+  const trpc = useTRPC();
+
+  return useMutation(
+    trpc.workflows.execute.mutationOptions({
+      onSuccess: (data) => {
+        toast.success(`workflow "${data.name}" executed`);
+      },
+      onError: (error) => {
+        toast.error(`Failed to save execute: ${error.message}`);
+      },
+    }),
+  );
+};

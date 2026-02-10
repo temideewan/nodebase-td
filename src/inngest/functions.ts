@@ -1,67 +1,28 @@
+import { NonRetriableError } from 'inngest';
 import { inngest } from './client';
-import { createGoogleGenerativeAI } from '@ai-sdk/google';
-import { createOpenAI } from '@ai-sdk/openai';
-import { createAnthropic } from '@ai-sdk/anthropic';
-import { generateText } from 'ai';
-import * as Sentry from '@sentry/nextjs';
+import prisma from '@/lib/database';
+import { topologicalSort } from './utils';
 
-const google = createGoogleGenerativeAI();
-const openAi = createOpenAI();
-const anthropic = createAnthropic();
-export const executeAi = inngest.createFunction(
-  { id: 'execute' },
-  { event: 'execute/ai' },
-  async ({ step }) => {
-    await step.sleep('pretend', '5s');
-    Sentry.logger.info('Some logger happening', {
-      log_source: 'inngest function',
+export const executeWorkflow = inngest.createFunction(
+  { id: 'execute-workflow' },
+  { event: 'workflows/execute.workflow' },
+  async ({ event, step }) => {
+    const workflowId = event.data.workflowId;
+    if (!workflowId) {
+      throw new NonRetriableError('Workflow ID is required');
+    }
+
+    const sortedNodes = await step.run('prepare-workflow', async () => {
+      const workflow = await prisma.workflow.findUniqueOrThrow({
+        where: { id: workflowId },
+        include: {
+          nodes: true,
+          connections: true,
+        },
+      });
+
+      return topologicalSort(workflow.nodes, workflow.connections);
     });
-    const { steps: geminiSteps } = await step.ai.wrap(
-      'gemini-generate-text',
-      generateText,
-      {
-        model: google('gemini-2.5-flash'),
-        system: 'You are helpful assistant',
-        prompt: 'What is 2 + 2',
-        experimental_telemetry: {
-          isEnabled: true,
-          recordInputs: true,
-          recordOutputs: true,
-        },
-      }
-    );
-    const { steps: openAiSteps } = await step.ai.wrap(
-      'open-ai-generate-text',
-      generateText,
-      {
-        model: openAi('gpt-4'),
-        system: 'You are helpful assistant',
-        prompt: 'What is 2 + 2',
-        experimental_telemetry: {
-          isEnabled: true,
-          recordInputs: true,
-          recordOutputs: true,
-        },
-      }
-    );
-    const { steps: anthropicSteps } = await step.ai.wrap(
-      'anthropic-generate-text',
-      generateText,
-      {
-        model: anthropic('claude-sonnet-4-0'),
-        system: 'You are helpful assistant',
-        prompt: 'What is 2 + 2',
-        experimental_telemetry: {
-          isEnabled: true,
-          recordInputs: true,
-          recordOutputs: true,
-        },
-      }
-    );
-    return {
-      geminiSteps,
-      openAiSteps,
-      anthropicSteps,
-    };
-  }
+    return { sortedNodes };
+  },
 );
